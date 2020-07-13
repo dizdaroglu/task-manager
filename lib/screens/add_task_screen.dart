@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:task_manager/models/taskData.dart';
+import 'package:task_manager/models/task_model.dart';
 
 class AddTaskScreen extends StatefulWidget {
   @override
   _AddTaskScreenState createState() => _AddTaskScreenState();
 }
+
+String newText;
+String newDate;
+int type;
+int day;
+int mount;
+int year;
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   CalendarController _controller;
@@ -18,6 +28,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tasksData = Provider.of<TaskData>(context);
+
     var size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
@@ -56,6 +68,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: TextField(
+                  onChanged: (val) {
+                    newText = val;
+                  },
                   decoration: InputDecoration(
                     hintText: "Enter Title",
                     hintStyle: TextStyle(
@@ -105,7 +120,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         formatButtonShowsNext: false),
                     startingDayOfWeek: StartingDayOfWeek.monday,
                     onDaySelected: (date, events) {
-                      print(date);
+                      day = date.day;
+                      mount = date.month;
+                      year = date.year;
+
+                      newDate = "$day-$mount-$year";
                     },
                   ),
                 ),
@@ -173,17 +192,28 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     width: 10,
                   ),
                   Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Color(0XFFFFA127),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        "Save",
-                        style: TextStyle(color: Colors.white),
+                    child: GestureDetector(
+                      onTap: () {
+                        tasksData.addTask(TaskModel(
+                            title: newText,
+                            dateTime: newDate,
+                            typeColor: type));
+
+                        print(Color(0XFF48B8AA).value);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0XFFFFA127),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "Save",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -200,22 +230,29 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 class TimeButton extends StatelessWidget {
   final String text;
   final Color color;
+  final Function callBack;
 
   const TimeButton({
     Key key,
     this.text,
     this.color,
+    this.callBack,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(13)),
-      child: Text(
-        text,
-        style: TextStyle(color: Colors.white),
+    return GestureDetector(
+      onTap: () {
+        type = color.value;
+      },
+      child: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            color: color, borderRadius: BorderRadius.circular(13)),
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
     );
   }

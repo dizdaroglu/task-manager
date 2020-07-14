@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:task_manager/models/taskData.dart';
 import 'package:task_manager/models/task_model.dart';
 import 'package:task_manager/screens/home_screen.dart';
+import 'package:task_manager/screens/onboarding_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
               fontFamily: "Cairo", scaffoldBackgroundColor: Color(0XFFEFEEF2)),
-          home: HomeScreen()),
+          home: OnBoardingScreen()),
     );
   }
 }
